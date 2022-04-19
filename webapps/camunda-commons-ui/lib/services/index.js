@@ -57,21 +57,21 @@ ngModule.factory(
  */
 ngModule.config([
   '$httpProvider',
-  function($httpProvider) {
+  function ($httpProvider) {
     $httpProvider.interceptors.push([
       '$rootScope',
       '$q',
       'RequestLogger',
-      function($rootScope, $q, RequestLogger) {
+      function ($rootScope, $q, RequestLogger) {
         RequestLogger.logStarted();
 
         return {
-          response: function(response) {
+          response: function (response) {
             RequestLogger.logFinished();
 
             return response;
           },
-          responseError: function(response) {
+          responseError: function (response) {
             RequestLogger.logFinished();
 
             var httpError = {
@@ -93,15 +93,21 @@ ngModule.config([
 ngModule.config([
   '$httpProvider',
   '$windowProvider',
-  function($httpProvider, $windowProvider) {
-    var window = $windowProvider.$get();
-    var uri = window.location.href;
+  function ($httpProvider, $windowProvider) {
+    if (!DEV_MODE) {
+      var window = $windowProvider.$get();
+      var uri = window.location.href;
 
-    var match = uri.match(/\/(?:app)(?!.*\/app\/)\/([\w-]+)\/([\w-]+)/);
-    if (match) {
-      $httpProvider.defaults.headers.get = {'X-Authorized-Engine': match[2]};
+      var match = uri.match(/\/(?:app)(?!.*\/app\/)\/([\w-]+)\/([\w-]+)/);
+      if (match) {
+        $httpProvider.defaults.headers.get = {'X-Authorized-Engine': match[2]};
+      } else {
+        throw new Error('no process engine selected');
+      }
+
     } else {
-      throw new Error('no process engine selected');
+      $httpProvider.defaults.headers.get = {'X-Authorized-Engine': 'default'};
+
     }
   }
 ]);

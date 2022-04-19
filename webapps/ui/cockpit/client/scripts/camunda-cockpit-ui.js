@@ -17,10 +17,13 @@
 
 'use strict';
 
+import '../styles/styles.less';
+import '/ui/cockpit/client/styles/styles-components.less';
+import '/ui/cockpit/plugins/styles.less';
+
 // DOM Polyfills
 require('dom4');
 
-var $ = (window.jQuery = window.$ = require('jquery'));
 require('../../../../camunda-commons-ui/vendor/bootstrap');
 
 var commons = require('../../../../camunda-commons-ui/lib');
@@ -37,7 +40,7 @@ var APP_NAME = 'cam.cockpit';
 
 var angular = require('../../../../camunda-commons-ui/vendor/angular');
 
-module.exports = function(pluginDependencies) {
+module.exports = function (pluginDependencies) {
   var ngDependencies = [
     'ng',
     'ngResource',
@@ -53,7 +56,7 @@ module.exports = function(pluginDependencies) {
     require('./services/main').name,
     require('./navigation/main').name
   ].concat(
-    pluginDependencies.map(function(el) {
+    pluginDependencies.map(function (el) {
       return el.ngModuleName;
     })
   );
@@ -78,7 +81,7 @@ module.exports = function(pluginDependencies) {
     '$animateProvider',
     '$qProvider',
     '$compileProvider',
-    function(
+    function (
       $routeProvider,
       UriProvider,
       $modalProvider,
@@ -110,7 +113,10 @@ module.exports = function(pluginDependencies) {
 
       UriProvider.replace(':engine', [
         '$window',
-        function($window) {
+        function ($window) {
+          if (DEV_MODE) {
+            return 'default';
+          }
           var uri = $window.location.href;
 
           var match = uri.match(/\/app\/cockpit\/([\w-]+)(|\/)/);
@@ -159,7 +165,7 @@ module.exports = function(pluginDependencies) {
 
   appNgModule.config([
     'camDateFormatProvider',
-    function(camDateFormatProvider) {
+    function (camDateFormatProvider) {
       var formats = {
         monthName: 'MMMM',
         day: 'DD',
@@ -191,7 +197,7 @@ module.exports = function(pluginDependencies) {
   });
 };
 
-module.exports.exposePackages = function(container) {
+module.exports.exposePackages = function (container) {
   container.angular = angular;
   container.jquery = $;
   container['camunda-commons-ui'] = commons;
@@ -203,7 +209,3 @@ module.exports.exposePackages = function(container) {
   container['lodash'] = lodash;
 };
 
-/* live-reload
-// loads livereload client library (without breaking other scripts execution)
-$('body').append('<script src="//' + location.hostname + ':LIVERELOAD_PORT/livereload.js?snipver=1"></script>');
-/* */

@@ -456,6 +456,13 @@
                 </resourceBases>
               </webAppConfig>
             </configuration>
+            <dependencies>
+              <dependency>
+                <groupId>org.jboss.spec.javax.ws.rs</groupId>
+                <artifactId>jboss-jaxrs-api_2.1_spec</artifactId>
+                <version>${version.jaxrs.api}</version>
+              </dependency>
+            </dependencies>
           </plugin>
           <plugin>
             <groupId>org.codehaus.mojo</groupId>
