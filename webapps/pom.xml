@@ -976,9 +976,9 @@
                     </exec>
                     <exec executable="cmd" failonerror="true">
                       <arg value="/c" />
-                      <arg value="node_modules\.bin\grunt.cmd" />
+                      <arg value="npm" />
+                      <arg value="run" />
                       <arg value="build" />
-                      <arg value="--color=false" />
                     </exec>
                   </target>
                 </configuration>
@@ -1020,9 +1020,9 @@
                       <arg value="scripts/xlts" />
                       <arg value="install" />
                     </exec>
-                    <exec executable="./node_modules/grunt-cli/bin/grunt" failonerror="true">
+                    <exec executable="npm" failonerror="true">
+                      <arg value="run" />
                       <arg value="build" />
-                      <arg value="--color=false" />
                     </exec>
                   </target>
                 </configuration>
