@@ -63,7 +63,7 @@ function bootstrapApp() {
   });
 }
 
-module.exports = function(pluginDependencies) {
+export function init(pluginDependencies) {
   var ngDeps = [
     commons.name,
     'pascalprecht.translate',
@@ -171,7 +171,7 @@ module.exports = function(pluginDependencies) {
   ).then(bootstrapApp);
 };
 
-module.exports.exposePackages = function(container) {
+export function exposePackages(container) {
   container.angular = angular;
   container.jquery = $;
   container['camunda-commons-ui'] = commons;

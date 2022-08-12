@@ -42,7 +42,7 @@ var $ = (window.jQuery = window.$ = require('jquery')),
 
 var APP_NAME = 'cam.admin';
 
-module.exports = function(pluginDependencies) {
+export function init(pluginDependencies) {
   var ngDependencies = [
     'ng',
     'ngResource',
@@ -199,7 +199,7 @@ module.exports = function(pluginDependencies) {
   });
 };
 
-module.exports.exposePackages = function(requirePackages) {
+export function exposePackages(requirePackages) {
   requirePackages.angular = angular;
   requirePackages.jquery = $;
   requirePackages['camunda-commons-ui'] = camCommonsUi;
