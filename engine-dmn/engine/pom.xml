@@ -54,21 +54,6 @@
     </dependency>
 
     <dependency>
-      <groupId>de.odysseus.juel</groupId>
-      <artifactId>juel-api</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>de.odysseus.juel</groupId>
-      <artifactId>juel-spi</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>de.odysseus.juel</groupId>
-      <artifactId>juel-impl</artifactId>
-    </dependency>
-
-    <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <scope>provided</scope>
@@ -114,6 +99,18 @@
       <groupId>joda-time</groupId>
       <artifactId>joda-time</artifactId>
       <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.camunda.bpm</groupId>
+      <artifactId>juel</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>jakarta.el</groupId>
+      <artifactId>jakarta.el-api</artifactId>
+      <version>5.0.1</version>
     </dependency>
 
   </dependencies>

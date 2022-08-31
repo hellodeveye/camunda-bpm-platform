@@ -16,21 +16,21 @@
  */
 package org.camunda.bpm.dmn.engine.impl.el;
 
-import javax.el.ArrayELResolver;
-import javax.el.BeanELResolver;
-import javax.el.CompositeELResolver;
-import javax.el.ELContext;
-import javax.el.ELResolver;
-import javax.el.ListELResolver;
-import javax.el.MapELResolver;
-import javax.el.ResourceBundleELResolver;
+import jakarta.el.ArrayELResolver;
+import jakarta.el.BeanELResolver;
+import jakarta.el.CompositeELResolver;
+import jakarta.el.ELContext;
+import jakarta.el.ELResolver;
+import jakarta.el.ListELResolver;
+import jakarta.el.MapELResolver;
+import jakarta.el.ResourceBundleELResolver;
 
 import org.camunda.bpm.dmn.engine.impl.spi.el.ElExpression;
 import org.camunda.bpm.dmn.engine.impl.spi.el.ElProvider;
 
-import de.odysseus.el.ExpressionFactoryImpl;
-import de.odysseus.el.TreeValueExpression;
-import de.odysseus.el.util.SimpleContext;
+import org.camunda.bpm.impl.juel.ExpressionFactoryImpl;
+import org.camunda.bpm.impl.juel.TreeValueExpression;
+import org.camunda.bpm.impl.juel.SimpleContext;
 
 /**
  * A simple implementation of {@link ElProvider} using Juel.

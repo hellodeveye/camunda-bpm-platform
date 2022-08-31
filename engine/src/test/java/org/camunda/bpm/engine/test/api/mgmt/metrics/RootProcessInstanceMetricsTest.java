@@ -23,6 +23,9 @@ import java.util.Map;
 
 import org.camunda.bpm.engine.management.Metrics;
 import org.camunda.bpm.engine.management.MetricsQuery;
+import org.camunda.bpm.engine.migration.MigrationPlanBuilder;
+import org.camunda.bpm.engine.repository.DeploymentWithDefinitions;
+import org.camunda.bpm.engine.runtime.ProcessInstance;
 import org.camunda.bpm.engine.variable.VariableMap;
 import org.camunda.bpm.engine.variable.Variables;
 import org.camunda.bpm.model.bpmn.Bpmn;
@@ -41,6 +44,7 @@ public class RootProcessInstanceMetricsTest extends AbstractMetricsTest {
   protected static final String BASE_INSTANCE_KEY = "baseProcess";
   protected static final BpmnModelInstance BASE_INSTANCE = Bpmn.createExecutableProcess(BASE_INSTANCE_KEY)
       .startEvent()
+      .userTask()
       .endEvent()
       .done();
 
@@ -65,13 +69,30 @@ public class RootProcessInstanceMetricsTest extends AbstractMetricsTest {
   @Test
   public void shouldCountOneRootProcessInstance() {
     // given
-    testRule.deploy(BASE_INSTANCE);
+    DeploymentWithDefinitions deploy = testRule.deploy(BASE_INSTANCE);
 
     // when
-    runtimeService.startProcessInstanceByKey(BASE_INSTANCE_KEY);
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(BASE_INSTANCE_KEY);
 
     // then
     MetricsQuery query = managementService.createMetricsQuery();
+    assertEquals(1l, query.name(Metrics.ROOT_PROCESS_INSTANCE_START).sum());
+    assertEquals(1l, query.name(Metrics.PROCESS_INSTANCES).sum());
+
+    // and force the db metrics reporter to report
+    processEngineConfiguration.getDbMetricsReporter().reportNow();
+
+    // still 1
+    assertEquals(1l, query.name(Metrics.ROOT_PROCESS_INSTANCE_START).sum());
+    assertEquals(1l, query.name(Metrics.PROCESS_INSTANCES).sum());
+
+    DeploymentWithDefinitions deploy1 = testRule.deploy(BASE_INSTANCE);
+    MigrationPlanBuilder migrationPlan = runtimeService.createMigrationPlan(
+        deploy.getDeployedProcessDefinitions().get(0).getId(), deploy1.getDeployedProcessDefinitions().get(0).getId()).mapEqualActivities();
+    runtimeService.newMigration(migrationPlan.build()).processInstanceIds(processInstance.getId()).execute();
+
+    // then
+    query = managementService.createMetricsQuery();
     assertEquals(1l, query.name(Metrics.ROOT_PROCESS_INSTANCE_START).sum());
     assertEquals(1l, query.name(Metrics.PROCESS_INSTANCES).sum());
 

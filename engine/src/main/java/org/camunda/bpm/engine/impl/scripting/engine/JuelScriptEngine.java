@@ -32,20 +32,20 @@ import javax.script.SimpleBindings;
 
 import org.camunda.bpm.engine.ProcessEngineException;
 import org.camunda.bpm.engine.impl.el.ExpressionFactoryResolver;
-import org.camunda.bpm.engine.impl.javax.el.ArrayELResolver;
-import org.camunda.bpm.engine.impl.javax.el.BeanELResolver;
-import org.camunda.bpm.engine.impl.javax.el.CompositeELResolver;
-import org.camunda.bpm.engine.impl.javax.el.ELContext;
-import org.camunda.bpm.engine.impl.javax.el.ELException;
-import org.camunda.bpm.engine.impl.javax.el.ELResolver;
-import org.camunda.bpm.engine.impl.javax.el.ExpressionFactory;
-import org.camunda.bpm.engine.impl.javax.el.FunctionMapper;
-import org.camunda.bpm.engine.impl.javax.el.ListELResolver;
-import org.camunda.bpm.engine.impl.javax.el.MapELResolver;
-import org.camunda.bpm.engine.impl.javax.el.ResourceBundleELResolver;
-import org.camunda.bpm.engine.impl.javax.el.ValueExpression;
-import org.camunda.bpm.engine.impl.javax.el.VariableMapper;
-import org.camunda.bpm.engine.impl.juel.SimpleResolver;
+import jakarta.el.ArrayELResolver;
+import jakarta.el.BeanELResolver;
+import jakarta.el.CompositeELResolver;
+import jakarta.el.ELContext;
+import jakarta.el.ELException;
+import jakarta.el.ELResolver;
+import jakarta.el.ExpressionFactory;
+import jakarta.el.FunctionMapper;
+import jakarta.el.ListELResolver;
+import jakarta.el.MapELResolver;
+import jakarta.el.ResourceBundleELResolver;
+import jakarta.el.ValueExpression;
+import jakarta.el.VariableMapper;
+import org.camunda.bpm.impl.juel.SimpleResolver;
 import org.camunda.bpm.engine.impl.util.ReflectUtil;
 
 
