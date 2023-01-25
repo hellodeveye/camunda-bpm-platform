@@ -17,7 +17,7 @@ pipeline {
     disableConcurrentBuilds()
   }
   triggers {
-    pollSCM('H H(15-16) * * *') // CE main daily trigger; UTC time
+    pollSCM('H(0-29) 13 * * *') // CE main daily trigger; UTC time
   }
   stages {
     stage('Trigger Main EE') {

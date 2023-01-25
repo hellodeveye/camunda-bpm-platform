@@ -552,6 +552,18 @@ pipeline {
     }
     always {
       cambpmWithSpanAttributes()
+      // on current development branch trigger daily and sidetrack if the build was not superseded
+      if (env.BRANCH_NAME == cambpmDefaultBranch() && currentBuild.currentResult != 'NOT_BUILT') {
+        cambpmTriggerDownstream(
+          platformVersionDir + "/cambpm-ce/cambpm-daily/${env.BRANCH_NAME}",
+          [], false, false, false, false
+        )
+        cambpmTriggerDownstream(
+          platformVersionDir + "/cambpm-ce/cambpm-sidetrack/${env.BRANCH_NAME}",
+          [], false, false, false, false
+        )
+      }
+
     }
   }
 }
