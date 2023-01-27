@@ -309,32 +309,25 @@ public class BpmnDeployer extends AbstractDefinitionDeployer<ProcessDefinitionEn
 
   }
 
-  protected boolean isSameMessageEventSubscriptionAlreadyPresent(EventSubscriptionDeclaration eventSubscription, String tenantId) {
+  protected boolean isSameMessageEventSubscriptionAlreadyPresent(EventSubscriptionDeclaration eventSubscription,
+                                                                 String tenantId) {
     // look for subscriptions for the same name in db:
-    List<EventSubscriptionEntity> subscriptionsForSameMessageName = getEventSubscriptionManager()
-      .findEventSubscriptionsByNameAndTenantId(EventType.MESSAGE.name(), eventSubscription.getUnresolvedEventName(), tenantId);
+    EventSubscriptionEntity subscriptionsForSameMessageName = getEventSubscriptionManager().findMessageStartEventSubscriptionByNameAndTenantId(
+        eventSubscription.getUnresolvedEventName(), tenantId);
 
     // also look for subscriptions created in the session:
-    List<EventSubscriptionEntity> cachedSubscriptions = getDbEntityManager()
-      .getCachedEntitiesByType(EventSubscriptionEntity.class);
+    List<EventSubscriptionEntity> cachedSubscriptions = getDbEntityManager().getCachedEntitiesByType(
+        EventSubscriptionEntity.class);
 
     for (EventSubscriptionEntity cachedSubscription : cachedSubscriptions) {
 
-      if(eventSubscription.getUnresolvedEventName().equals(cachedSubscription.getEventName())
-        && hasTenantId(cachedSubscription, tenantId)
-        && !subscriptionsForSameMessageName.contains(cachedSubscription)) {
+      if (eventSubscription.getUnresolvedEventName().equals(cachedSubscription.getEventName()) && hasTenantId(
+          cachedSubscription, tenantId) && !subscriptionsForSameMessageName.equals(cachedSubscription)) {
 
-        subscriptionsForSameMessageName.add(cachedSubscription);
+        subscriptionsForSameMessageName = cachedSubscription;
       }
     }
-
-    // remove subscriptions deleted in the same command
-    subscriptionsForSameMessageName = getDbEntityManager().pruneDeletedEntities(subscriptionsForSameMessageName);
-
-    // remove subscriptions for different type of event (i.e. remove intermediate message event subscriptions)
-    subscriptionsForSameMessageName = filterSubscriptionsOfDifferentType(eventSubscription, subscriptionsForSameMessageName);
-
-    return !subscriptionsForSameMessageName.isEmpty();
+    return !getDbEntityManager().isDeleted(subscriptionsForSameMessageName);
   }
 
   protected boolean hasTenantId(EventSubscriptionEntity cachedSubscription, String tenantId) {
