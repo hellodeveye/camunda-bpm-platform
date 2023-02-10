@@ -300,7 +300,7 @@ public class BpmnDeployer extends AbstractDefinitionDeployer<ProcessDefinitionEn
 
     String tenantId = processDefinition.getTenantId();
 
-    if(isSameMessageEventSubscriptionAlreadyPresent(messageEventDefinition, tenantId)) {
+    if(isSameMessageStartEventSubscriptionAlreadyPresent(messageEventDefinition, tenantId)) {
       throw LOG.messageEventSubscriptionWithSameNameExists(processDefinition.getResourceName(), messageEventDefinition.getUnresolvedEventName());
     }
 
@@ -309,8 +309,8 @@ public class BpmnDeployer extends AbstractDefinitionDeployer<ProcessDefinitionEn
 
   }
 
-  protected boolean isSameMessageEventSubscriptionAlreadyPresent(EventSubscriptionDeclaration eventSubscription,
-                                                                 String tenantId) {
+  protected boolean isSameMessageStartEventSubscriptionAlreadyPresent(EventSubscriptionDeclaration eventSubscription,
+                                                                      String tenantId) {
     // look for subscriptions for the same name in db:
     EventSubscriptionEntity subscriptionsForSameMessageName = getEventSubscriptionManager()
         .findMessageStartEventSubscriptionByNameAndTenantId(eventSubscription.getUnresolvedEventName(), tenantId);
@@ -320,13 +320,15 @@ public class BpmnDeployer extends AbstractDefinitionDeployer<ProcessDefinitionEn
         EventSubscriptionEntity.class);
 
     for (EventSubscriptionEntity cachedSubscription : cachedSubscriptions) {
-
-      if (eventSubscription.getUnresolvedEventName().equals(cachedSubscription.getEventName()) && hasTenantId(
-          cachedSubscription, tenantId) && !subscriptionsForSameMessageName.equals(cachedSubscription)) {
+      if (eventSubscription.getUnresolvedEventName().equals(cachedSubscription.getEventName()) &&
+          hasTenantId(cachedSubscription, tenantId) &&
+          !subscriptionsForSameMessageName.equals(cachedSubscription)) {
 
         subscriptionsForSameMessageName = cachedSubscription;
+        break;
       }
     }
+
     return subscriptionsForSameMessageName != null && !getDbEntityManager().isDeleted(subscriptionsForSameMessageName);
   }
 
