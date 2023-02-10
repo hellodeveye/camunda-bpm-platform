@@ -312,8 +312,8 @@ public class BpmnDeployer extends AbstractDefinitionDeployer<ProcessDefinitionEn
   protected boolean isSameMessageEventSubscriptionAlreadyPresent(EventSubscriptionDeclaration eventSubscription,
                                                                  String tenantId) {
     // look for subscriptions for the same name in db:
-    EventSubscriptionEntity subscriptionsForSameMessageName = getEventSubscriptionManager().findMessageStartEventSubscriptionByNameAndTenantId(
-        eventSubscription.getUnresolvedEventName(), tenantId);
+    EventSubscriptionEntity subscriptionsForSameMessageName = getEventSubscriptionManager()
+        .findMessageStartEventSubscriptionByNameAndTenantId(eventSubscription.getUnresolvedEventName(), tenantId);
 
     // also look for subscriptions created in the session:
     List<EventSubscriptionEntity> cachedSubscriptions = getDbEntityManager().getCachedEntitiesByType(
@@ -327,7 +327,7 @@ public class BpmnDeployer extends AbstractDefinitionDeployer<ProcessDefinitionEn
         subscriptionsForSameMessageName = cachedSubscription;
       }
     }
-    return !getDbEntityManager().isDeleted(subscriptionsForSameMessageName);
+    return subscriptionsForSameMessageName != null && !getDbEntityManager().isDeleted(subscriptionsForSameMessageName);
   }
 
   protected boolean hasTenantId(EventSubscriptionEntity cachedSubscription, String tenantId) {
