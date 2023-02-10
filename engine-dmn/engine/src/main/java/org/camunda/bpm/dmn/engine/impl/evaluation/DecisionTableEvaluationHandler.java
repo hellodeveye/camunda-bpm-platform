@@ -214,16 +214,19 @@ public class DecisionTableEvaluationHandler implements DmnDecisionLogicEvaluatio
     Map<String, DmnEvaluatedOutput> outputEntries = new LinkedHashMap<String, DmnEvaluatedOutput>();
 
     for (int outputIdx = 0; outputIdx < decisionTableOutputs.size(); outputIdx++) {
-      // evaluate output entry, skip empty expressions
       DmnExpressionImpl conclusion = matchingRule.getConclusions().get(outputIdx);
+      DmnDecisionTableOutputImpl decisionTableOutput = decisionTableOutputs.get(outputIdx);
       if (isNonEmptyExpression(conclusion)) {
         Object value = evaluateOutputEntry(conclusion, variableContext);
 
         // transform to output type
-        DmnDecisionTableOutputImpl decisionTableOutput = decisionTableOutputs.get(outputIdx);
         TypedValue typedValue = decisionTableOutput.getTypeDefinition().transform(value);
 
         // set on result
+        DmnEvaluatedOutputImpl evaluatedOutput = new DmnEvaluatedOutputImpl(decisionTableOutput, typedValue);
+        outputEntries.put(decisionTableOutput.getOutputName(), evaluatedOutput);
+      } else {
+        TypedValue typedValue = decisionTableOutput.getTypeDefinition().transform(null);
         DmnEvaluatedOutputImpl evaluatedOutput = new DmnEvaluatedOutputImpl(decisionTableOutput, typedValue);
         outputEntries.put(decisionTableOutput.getOutputName(), evaluatedOutput);
       }
