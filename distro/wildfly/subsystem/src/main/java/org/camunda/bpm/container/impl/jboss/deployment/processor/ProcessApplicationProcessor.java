@@ -25,7 +25,7 @@ import java.util.logging.Logger;
 import org.camunda.bpm.application.PostDeploy;
 import org.camunda.bpm.application.PreUndeploy;
 import org.camunda.bpm.application.ProcessApplication;
-import org.camunda.bpm.application.impl.ServletProcessApplication;
+import org.camunda.bpm.application.impl.JakartaServletProcessApplication;
 import org.camunda.bpm.container.impl.jboss.deployment.marker.ProcessApplicationAttachments;
 import org.jboss.as.ee.component.Attachments;
 import org.jboss.as.ee.component.ComponentDescription;
@@ -104,7 +104,7 @@ public class ProcessApplicationProcessor implements DeploymentUnitProcessor {
       processApplicationAnnotations = compositeIndex.getAnnotations(DotName.createSimple(ProcessApplication.class.getName()));
       postDeployAnnnotations = compositeIndex.getAnnotations(DotName.createSimple(PostDeploy.class.getName()));
       preUndeployAnnnotations = compositeIndex.getAnnotations(DotName.createSimple(PreUndeploy.class.getName()));
-      servletProcessApplications = compositeIndex.getAllKnownSubclasses(DotName.createSimple(ServletProcessApplication.class.getName()));
+      servletProcessApplications = compositeIndex.getAllKnownSubclasses(DotName.createSimple(JakartaServletProcessApplication.class.getName()));
     } else {
       return null;
     }
