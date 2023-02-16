@@ -1,10 +1,10 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>camunda-qa-wildfly-runtime</artifactId>
+  <artifactId>camunda-qa-wildfly26-runtime</artifactId>
   <packaging>jar</packaging>
 
-  <name>Camunda Platform - QA Wildfly Test Runtime</name>
+  <name>Camunda Platform - QA Wildfly 26 Test Runtime</name>
 
   <parent>
     <groupId>org.camunda.bpm.qa</groupId>
@@ -128,12 +128,12 @@
   <profiles>
 
     <profile>
-      <id>wildfly</id>
+      <id>wildfly26</id>
       <dependencies>
         <dependency>
-          <!-- make sure it comes after assembly in the build -->
+          <!-- make sure it comes after WildFly 26 modules in the build -->
           <groupId>org.camunda.bpm.wildfly</groupId>
-          <artifactId>camunda-wildfly-assembly</artifactId>
+          <artifactId>camunda-wildfly26-modules</artifactId>
           <version>${project.version}</version>
           <type>pom</type>
           <scope>test</scope>
@@ -175,6 +175,7 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-dependency-plugin</artifactId>
+            <version>3.5.0</version>
             <executions>
               <execution>
                 <id>unpack-server</id>
@@ -186,12 +187,22 @@
                 <configuration>
                   <artifactItems>
                     <artifactItem>
-                      <groupId>org.camunda.bpm.wildfly</groupId>
-                      <artifactId>camunda-wildfly-assembly</artifactId>
-                      <version>${project.version}</version>
+                      <groupId>org.wildfly</groupId>
+                      <artifactId>wildfly-dist</artifactId>
+                      <version>${version.wildfly26}</version>
                       <type>tar.gz</type>
                       <overWrite>true</overWrite>
                       <outputDirectory>target/</outputDirectory>
+                      <excludes>**/h2database/**</excludes>
+                    </artifactItem>
+                    <artifactItem>
+                      <groupId>org.camunda.bpm.wildfly</groupId>
+                      <artifactId>camunda-wildfly26-modules</artifactId>
+                      <version>${project.version}</version>
+                      <type>tar.gz</type>
+                      <overWrite>true</overWrite>
+                      <outputDirectory>${wildfly26.runtime.location}/modules</outputDirectory>
+                      <excludes>**/META-INF/**</excludes>
                     </artifactItem>
                   </artifactItems>
                 </configuration>
@@ -216,7 +227,7 @@
                 </goals>
                 <configuration>
                   <overwrite>true</overwrite>
-                  <outputDirectory>${wildfly.runtime.location}/standalone</outputDirectory>
+                  <outputDirectory>${wildfly26.runtime.location}/standalone</outputDirectory>
                 </configuration>
               </execution>
             </executions>
@@ -233,7 +244,7 @@
                 </goals>
                 <configuration>
                   <target unless="maven.test.skip">
-                    <copy todir="${wildfly.runtime.location}/modules" overwrite="true">
+                    <copy todir="${wildfly26.runtime.location}/modules" overwrite="true">
                       <fileset dir="src/main/common/modules" />
                     </copy>
                   </target>
@@ -250,16 +261,16 @@
                     <dependencyfilesets scopes="runtime" />
 
                     <!-- copy modules -->
-                    <copy todir="${wildfly.runtime.location}/modules" flatten="false" overwrite="true">
+                    <copy todir="${wildfly26.runtime.location}/modules" flatten="false" overwrite="true">
                       <fileset refid="maven.project.dependencies" />
                       <regexpmapper from="^(.*)/([^/]+)/([^/]*)$$" to="\1/main/\3" handledirsep="yes" />
                     </copy>
 
                     <delete>
-                      <fileset dir="${wildfly.runtime.location}/modules/org/camunda/bpm/qa" includes="**/*.jar" />
+                      <fileset dir="${wildfly26.runtime.location}/modules/org/camunda/bpm/qa" includes="**/*.jar" />
                     </delete>
                     <!-- copy all files again, but this only matches fox files and this treatment makes is maven 2/3 compatible => timestamped snapshot -->
-                    <copy todir="${wildfly.runtime.location}/modules" flatten="false" verbose="true">
+                    <copy todir="${wildfly26.runtime.location}/modules" flatten="false" verbose="true">
                       <fileset refid="maven.project.dependencies" />
                       <mapper>
                         <chainedmapper>
@@ -270,7 +281,7 @@
                     </copy>
 
                     <!-- replace database versions -->
-                    <replace dir="${wildfly.runtime.location}/modules">
+                    <replace dir="${wildfly26.runtime.location}/modules">
                       <include name="**/module.xml" />
                       <replacefilter token="@project.version@" value="${project.version}" />
                       <replacefilter token="@version.postgresql@" value="${version.postgresql}" />
@@ -287,12 +298,11 @@
 
     <profile>
       <id>wildfly-domain</id>
-
       <dependencies>
         <dependency>
-          <!-- make sure it comes after assembly in the build -->
+          <!-- make sure it comes after WildFly 26 modules in the build -->
           <groupId>org.camunda.bpm.wildfly</groupId>
-          <artifactId>camunda-wildfly-assembly</artifactId>
+          <artifactId>camunda-wildfly26-modules</artifactId>
           <version>${project.version}</version>
           <type>pom</type>
           <scope>test</scope>
@@ -315,12 +325,22 @@
                 <configuration>
                   <artifactItems>
                     <artifactItem>
-                      <groupId>org.camunda.bpm.wildfly</groupId>
-                      <artifactId>camunda-wildfly-assembly</artifactId>
-                      <version>${project.version}</version>
+                      <groupId>org.wildfly</groupId>
+                      <artifactId>wildfly-dist</artifactId>
+                      <version>${version.wildfly26}</version>
                       <type>tar.gz</type>
                       <overWrite>true</overWrite>
                       <outputDirectory>target/</outputDirectory>
+                      <excludes>**/h2database/**</excludes>
+                    </artifactItem>
+                    <artifactItem>
+                      <groupId>org.camunda.bpm.wildfly</groupId>
+                      <artifactId>camunda-wildfly26-modules</artifactId>
+                      <version>${project.version}</version>
+                      <type>tar.gz</type>
+                      <overWrite>true</overWrite>
+                      <outputDirectory>${wildfly26.runtime.location}/modules</outputDirectory>
+                      <excludes>**/META-INF/**</excludes>
                     </artifactItem>
                   </artifactItems>
                 </configuration>
@@ -345,7 +365,7 @@
                 </goals>
                 <configuration>
                   <overwrite>true</overwrite>
-                  <outputDirectory>${wildfly.runtime.location}/domain</outputDirectory>
+                  <outputDirectory>${wildfly26.runtime.location}/domain</outputDirectory>
                 </configuration>
               </execution>
             </executions>
@@ -362,7 +382,7 @@
                 </goals>
                 <configuration>
                   <target unless="maven.test.skip">
-                    <copy todir="${wildfly.runtime.location}/modules" overwrite="true">
+                    <copy todir="${wildfly26.runtime.location}/modules" overwrite="true">
                       <fileset dir="src/main/common/modules" />
                     </copy>
                   </target>
@@ -379,16 +399,16 @@
                     <dependencyfilesets scopes="runtime" />
 
                     <!-- copy modules -->
-                    <copy todir="${wildfly.runtime.location}/modules" flatten="false" overwrite="true">
+                    <copy todir="${wildfly26.runtime.location}/modules" flatten="false" overwrite="true">
                       <fileset refid="maven.project.dependencies" />
                       <regexpmapper from="^(.*)/([^/]+)/([^/]*)$$" to="\1/main/\3" handledirsep="yes" />
                     </copy>
 
                     <delete>
-                      <fileset dir="${wildfly.runtime.location}/modules/org/camunda/bpm/qa" includes="**/*.jar" />
+                      <fileset dir="${wildfly26.runtime.location}/modules/org/camunda/bpm/qa" includes="**/*.jar" />
                     </delete>
                     <!-- copy all files again, but this only matches fox files and this treatment makes is maven 2/3 compatible => timestamped snapshot -->
-                    <copy todir="${wildfly.runtime.location}/modules" flatten="false" verbose="true">
+                    <copy todir="${wildfly26.runtime.location}/modules" flatten="false" verbose="true">
                       <fileset refid="maven.project.dependencies" />
                       <mapper>
                         <chainedmapper>
@@ -399,7 +419,7 @@
                     </copy>
 
                     <!-- replace database versions -->
-                    <replace dir="${wildfly.runtime.location}/modules">
+                    <replace dir="${wildfly26.runtime.location}/modules">
                       <include name="**/module.xml" />
                       <replacefilter token="@project.version@" value="${project.version}" />
                       <replacefilter token="@version.postgresql@" value="${version.postgresql}" />

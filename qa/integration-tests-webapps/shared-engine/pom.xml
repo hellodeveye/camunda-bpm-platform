@@ -23,16 +23,16 @@
   <profiles>
 
     <profile>
-      <id>wildfly</id>
+      <id>wildfly26</id>
       <properties>
-        <jboss.runtime>${basedir}/../${wildfly.runtime.location}</jboss.runtime>
+        <jboss.runtime>${basedir}/../${wildfly26.runtime.location}</jboss.runtime>
         <http.port>${jboss.http.port}</http.port>
       </properties>
       <dependencies>
         <dependency>
           <!-- make sure it comes after assembly in the build -->
           <groupId>org.camunda.bpm.qa</groupId>
-          <artifactId>camunda-qa-wildfly-runtime</artifactId>
+          <artifactId>camunda-qa-wildfly26-runtime</artifactId>
           <version>${project.version}</version>
           <type>pom</type>
         </dependency>
